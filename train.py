@@ -10,10 +10,8 @@ from sklearn.pipeline import Pipeline
 from sklearn.ensemble import ExtraTreesClassifier
 from sklearn.metrics import classification_report, accuracy_score
 
-# ============================================================
-# STEP 1: LOAD DATASET
-# ============================================================
 
+# STEP 1: LOAD DATASET
 df = pd.read_csv("data/Accommodation.csv")
 
 # Fix incorrect column name from dataset
@@ -26,20 +24,14 @@ print(df.head())
 print("=============================================\n")
 
 
-# ============================================================
 # STEP 2: DROP UNNECESSARY COLUMNS
-# ============================================================
-
 df = df.drop(columns=['Name', 'Address', 'PS/MC/UC', 'AGA Division'], errors='ignore')
 
 print("\nColumns after dropping unnecessary ones:")
 print(df.columns.tolist())
 
 
-# ============================================================
 # STEP 3: CLEANING
-# ============================================================
-
 df = df.drop_duplicates()
 df = df.dropna(subset=['Grade'])
 df = df.dropna()
@@ -51,10 +43,7 @@ print(df.head())
 print("============================================\n")
 
 
-# ============================================================
 # STEP 4: MAP GRADE INTO 3 MAIN LEVELS
-# ============================================================
-
 def map_grade(grade):
     grade = str(grade).upper()
     if grade in ['DELUXE', 'SUPERIOR', 'FIVE']:
@@ -70,18 +59,12 @@ print("\nNew Grade Distribution:")
 print(df['Grade_clean'].value_counts())
 
 
-# ============================================================
 # STEP 5: DEFINE TARGET AND FEATURES
-# ============================================================
-
 y = df['Grade_clean']
 X = df[['Rooms', 'Latitude', 'Longitude', 'District', 'Type']]
 
 
-# ============================================================
 # STEP 6: ENCODE TARGET VARIABLE
-# ============================================================
-
 target_encoder = LabelEncoder()
 y = target_encoder.fit_transform(y)
 
@@ -89,10 +72,7 @@ print("\nEncoded Target Classes:")
 print(target_encoder.classes_)
 
 
-# ============================================================
 # STEP 7: PREPROCESSING FEATURES
-# ============================================================
-
 numeric_features = ['Rooms', 'Latitude', 'Longitude']
 categorical_features = ['District', 'Type']
 
@@ -104,19 +84,13 @@ preprocessor = ColumnTransformer(
 )
 
 
-# ============================================================
 # STEP 8: TRAIN-TEST SPLIT
-# ============================================================
-
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.3, random_state=42, stratify=y
 )
 
 
-# ============================================================
 # STEP 9: CREATE PIPELINE (Preprocessing + Extra Trees)
-# ============================================================
-
 model_pipeline = Pipeline(steps=[
     ('preprocessor', preprocessor),
     ('classifier', ExtraTreesClassifier(
@@ -126,16 +100,10 @@ model_pipeline = Pipeline(steps=[
 ])
 
 
-# ============================================================
 # STEP 10: TRAIN MODEL
-# ============================================================
-
 model_pipeline.fit(X_train, y_train)
 
-# ============================================================
 # FEATURE IMPORTANCE ANALYSIS
-# ============================================================
-
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -161,8 +129,7 @@ plt.tight_layout()
 plt.show()
 
 
-
-
+# CROSS VALIDATION ANALYSIS
 from sklearn.model_selection import cross_val_score
 from sklearn.model_selection import StratifiedKFold
 
@@ -171,10 +138,9 @@ cv_scores = cross_val_score(model_pipeline, X, y, cv=cv)
 print("Cross Validation Accuracy:", cv_scores.mean())
 print("Cross Validation Accuracy Mean:", cv_scores.mean())
 print("Cross Validation Accuracy Std:", cv_scores.std())
-# ============================================================
-# STEP 11: EVALUATE MODEL
-# ============================================================
 
+
+# STEP 11: EVALUATE MODEL
 y_pred = model_pipeline.predict(X_test)
 
 print("\n========== MODEL EVALUATION ==========")
@@ -198,10 +164,8 @@ plt.ylabel("Actual")
 plt.title("Confusion Matrix")
 plt.show()
 
-# ============================================================
-# STEP 12: SHAP ANALYSIS
-# ============================================================
 
+# STEP 12: SHAP ANALYSIS
 import numpy as np
 
 classifier = model_pipeline.named_steps['classifier']
@@ -225,10 +189,7 @@ shap.summary_plot(
 )
 
 
-# ============================================================
 # STEP 13: SAVE MODEL AND ENCODER
-# ============================================================
-
 os.makedirs("models", exist_ok=True)
 
 with open("models/model.pkl", "wb") as f:

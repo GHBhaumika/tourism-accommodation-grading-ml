@@ -5,10 +5,8 @@ import shap
 import matplotlib.pyplot as plt
 import numpy as np
 
-# ============================================================
-# PAGE CONFIG
-# ============================================================
 
+# PAGE CONFIG
 st.set_page_config(
     page_title="Tourism Grade Predictor",
     page_icon="🏨",
@@ -19,20 +17,16 @@ st.title("🏨 Tourism Accommodation Grade Prediction System")
 st.markdown("Machine Learning Model: Extra Trees Classifier")
 st.markdown("---")
 
-# ============================================================
-# LOAD MODEL
-# ============================================================
 
+# LOAD MODEL
 model = pickle.load(open("models/model.pkl", "rb"))
 target_encoder = pickle.load(open("models/target_encoder.pkl", "rb"))
 
 classifier = model.named_steps['classifier']
 preprocessor = model.named_steps['preprocessor']
 
-# ============================================================
-# CREATE LAYOUT (2 COLUMNS)
-# ============================================================
 
+# CREATE LAYOUT (2 COLUMNS)
 col1, col2 = st.columns(2)
 
 with col1:
@@ -52,10 +46,8 @@ with col1:
 
     predict_button = st.button("🔍 Predict Grade")
 
-# ============================================================
-# PREDICTION SECTION
-# ============================================================
 
+# PREDICTION SECTION
 if predict_button:
 
     input_df = pd.DataFrame(
@@ -80,10 +72,8 @@ if predict_button:
 
         st.bar_chart(prob_df.set_index("Grade Level"))
 
-    # ============================================================
+    
     # SHAP + HUMAN EXPLANATION
-    # ============================================================
-
     st.markdown("---")
     st.subheader("🧠 Why Did The Model Predict This?")
 
@@ -116,10 +106,6 @@ if predict_button:
     top_positive = explanation_df[explanation_df["Impact"] > 0].head(3)
     top_negative = explanation_df[explanation_df["Impact"] < 0].head(2)
 
-    # ------------------------------
-    # SMART HUMAN-READABLE EXPLANATION
-    # ------------------------------
-
     st.markdown("### 📖 Explanation")
 
     # Extract selected inputs
@@ -136,7 +122,7 @@ if predict_button:
 
     reasons = []
 
-    # Rooms logic
+    # Rooms
     if room_count >= 50:
         reasons.append(f"it has a relatively high number of rooms ({room_count}), which is typical for higher-grade accommodations")
     elif room_count <= 10:
