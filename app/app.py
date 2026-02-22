@@ -5,29 +5,21 @@ import os
 
 app = FastAPI()
 
-# ============================================================
-# LOAD MODEL
-# ============================================================
 
+# LOAD MODEL
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 model = pickle.load(open(os.path.join(BASE_DIR, "models", "model.pkl"), "rb"))
 target_encoder = pickle.load(open(os.path.join(BASE_DIR, "models", "target_encoder.pkl"), "rb"))
 
 
-# ============================================================
 # HOME ROUTE
-# ============================================================
-
 @app.get("/")
 def home():
     return {"message": "Tourism Accommodation Grade Prediction API Running"}
 
 
-# ============================================================
 # PREDICTION ROUTE
-# ============================================================
-
 @app.post("/predict")
 def predict(Rooms: float = Form(...),
             Latitude: float = Form(...),

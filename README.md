@@ -106,6 +106,7 @@ tourism_ml_project/
 ├── README.md
 └── requirements.txt
 
+---
 
 ## How to Use
 ### Clone the repo
