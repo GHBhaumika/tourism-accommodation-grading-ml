@@ -135,7 +135,7 @@ This will preprocess the dataset, train the Extra Trees classifier, generate SHA
 streamlit run streamlit_app.py
 
 3️⃣ Run FastAPI (Backend API)
-uvicorn app:app --reload
+uvicorn app.app:app --reload
 Access API at http://127.0.0.1:8000
 POST /predict endpoint to get grade prediction
 
